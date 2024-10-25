@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fatekinho</string>
+    <string name="menu_players">Players</string>
+    <string name="menu_transactions">Transactions</string>
+    <string name="menu_games">Games</string>
+    <string name="menu_reports">Reports</string>
+    <string name="menu_customer_service">Customer Service</string>
+    <string name="menu_config">Configurations</string>
+    <string name="menu_home">Home</string>
+</resources>

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Fatekinho</string>
+    <string name="menu_home">Visão Geral</string>
+    <string name="menu_players">Jogadores</string>
+    <string name="menu_transactions">Transações</string>
+    <string name="menu_games">Jogos</string>
+    <string name="menu_reports">Relatórios</string>
+    <string name="menu_customer_service">Suporte ao Cliente</string>
+    <string name="menu_config">Configurações</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+
+    <!-- Cores principais do app (segundo o que está no figma) -->
+    <!-- https://www.figma.com/design/5Klf8G8TkEiV9VuHp4zTot/FATEKINHO?node-id=560-6&node-type=frame&t=TzcwLCJhxF5pIm05-0 -->
+    <color name="background_black">#090F15</color>
+    <color name="secondary_black">#0F1923</color>
+    <color name="red">#ED1836</color>
+    <color name="orange">#D4D4D4</color>
+    <color name="yellow">#FAF755</color>
+    <color name="gray">#9C9294</color>
+    <color name="light_gray">#D4D4D4</color>
+    <color name="white">#F2F0EF</color>
+</resources>
