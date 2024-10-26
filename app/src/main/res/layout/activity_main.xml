@@ -30,6 +30,25 @@
                 android:src="@drawable/logo_no_text"
                 android:layout_gravity="start"
                 android:layout_marginStart="8dp"/>
+            <Button
+                android:id="@+id/btn_entrar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Entrar"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:backgroundTint="@color/secondary_black"/>
+            <Button
+                android:id="@+id/btn_cadastrar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Cadastrar"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/yellow"/>
+
         </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout
@@ -46,6 +65,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:menu="@menu/top_app_bar"
+        android:background="@color/secondary_black"
         app:itemIconTint="@color/yellow"
         app:itemTextColor="@color/yellow"/>
 
