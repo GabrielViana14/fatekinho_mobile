@@ -1,47 +1,55 @@
 package com.fatec.fatekinho
 
+import android.app.Activity
 import android.content.Intent
 import android.health.connect.datatypes.units.Length
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.material.appbar.MaterialToolbar
+
 import com.google.android.material.navigation.NavigationView
-import java.sql.Connection
-import java.sql.DriverManager
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navView: NavigationView
     private lateinit var toolbarIcon: ImageView
     private lateinit var btn_login: Button
+    private lateinit var btnCadastro:Button
+    private lateinit var txtUsername: TextView
+    private var txtLogin: String = "Teste"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
-        connectToDatabase()
-
-
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        navView = findViewById(R.id.nav_view)
+        drawerLayout = findViewById(R.id.drawerLayout)
+        txtUsername = findViewById(R.id.txt_username)
         toolbarIcon = findViewById(R.id.toolbar_logo)
-
+        btnCadastro = findViewById(R.id.btn_cadastrar)
         btn_login = findViewById(R.id.btn_entrar)
+
+
         btn_login.setOnClickListener {
-            val intent: Intent = Intent(this,LoginActivity::class.java)
+            val intent = Intent(this,LoginActivity::class.java)
             startActivity(intent)
         }
 
@@ -50,17 +58,29 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+
+
         // '?' diz que a variavel pode ser vazia
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        //Esconde texto
+        txtUsername.visibility = View.GONE
 
+        txtLogin = intent.getStringExtra("login").toString()
+
+        if(txtLogin != "null"){
+            txtUsername.text = txtLogin
+            txtUsername.visibility = View.VISIBLE
+            btn_login.visibility = View.GONE
+            btnCadastro.visibility = View.GONE
+        }
 
         // lidar com botões dentro do nav drawer
-        val navView: NavigationView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener {
 
             when(it.itemId){
                 R.id.home -> replaceFragment(HomeFragment())
+                R.id.logoff -> logoff()
 
 
             }
@@ -84,6 +104,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)){
             return true
@@ -91,6 +112,7 @@ class MainActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
+
 
     // mudar de tela continuando com o mesmo top e drawer
     // basicamente só troca a parte do meio
@@ -100,20 +122,14 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    fun connectToDatabase() {
-        val url = "jdbc:sqlserver://fatekinho-fatec.database.windows.net;databaseName=fatekinho"
-        val user = "admin1"
-        val password = "Admin@2024"
+    private fun logoff(){
+        txtLogin = ""
+        txtUsername.visibility = View.GONE
+        btnCadastro.visibility = View.VISIBLE
+        btn_login.visibility = View.VISIBLE
 
-        try {
-            val connection: Connection = DriverManager.getConnection(url, user, password)
-            Toast.makeText(this@MainActivity,"Conectado",Toast.LENGTH_SHORT).show()
-            // Execute suas consultas aqui
-            connection.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
+
 
 
 
