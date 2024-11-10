@@ -1,9 +1,12 @@
 package com.fatec.fatekinho
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -18,24 +21,33 @@ import java.sql.ResultSet
 import java.sql.SQLException
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var txt_senha: EditText
 
-    private lateinit var btnEntrar: Button
-    private lateinit var txtEmail: EditText
-    private lateinit var txtSenha: EditText
-
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        txt_senha = findViewById(R.id.login_txt_senha)
 
-        btnEntrar = findViewById(R.id.login_btn_entrar)
-        txtEmail = findViewById(R.id.login_email_text)
-        txtSenha = findViewById(R.id.login_senha_text)
-
-        btnEntrar.setOnClickListener {
-            val email = txtEmail.text.toString()
-            val senha = txtSenha.text.toString()
-            Login(email, senha)
+        // Função para mostrar ou ocultar senha
+        txt_senha.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val drawableRight = 2
+                if (event.rawX >= (txt_senha.right - txt_senha.compoundDrawables[drawableRight].bounds.width())) {
+                    if (txt_senha.transformationMethod == null) {
+                        txt_senha.transformationMethod = PasswordTransformationMethod.getInstance()
+                        txt_senha.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.baseline_toggle_off_48), null)
+                    } else {
+                        txt_senha.transformationMethod = null
+                        txt_senha.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.toggle_on_maior), null)
+                    }
+                }
+            }
+            false
         }
+
+
+
     }
 
     private fun Login(email: String, senha: String) {

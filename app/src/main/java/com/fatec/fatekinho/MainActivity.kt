@@ -1,7 +1,9 @@
 package com.fatec.fatekinho
 
+
 import android.app.Activity
 import android.content.Intent
+import android.database.SQLException
 import android.health.connect.datatypes.units.Length
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,7 +24,8 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-
+import java.sql.DriverManager
+import java.util.*
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -46,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         toolbarIcon = findViewById(R.id.toolbar_logo)
         btnCadastro = findViewById(R.id.btn_cadastrar)
         btn_login = findViewById(R.id.btn_entrar)
+
+        conectaDB()
 
 
         btn_login.setOnClickListener {
@@ -130,7 +135,36 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun conectaDB() {
+        val connectionUrl =
+            "jdbc:sqlserver://fatekinho-fatec.database.windows.net:1433;" +
+                    "database=fatekinho;" +
+                    "user=admin1@fatekinho-fatec;" + // Inclui o domínio para autenticação
+                    "password=Admin@2024;" +
+                    "encrypt=false;" +
+                    "trustServerCertificate=true;" +
+                    "loginTimeout=30;"
 
+        try {
+            // Carrega o driver explicitamente
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver")
 
+            println("Connecting to SQL Server ... $connectionUrl")
+            DriverManager.getConnection(connectionUrl).use { connection ->
+                println("Done.")
+                Toast.makeText(this@MainActivity, "Connected", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: SQLException) {
+            Toast.makeText(this@MainActivity, "SQL Exception: ${e.message}", Toast.LENGTH_LONG).show()
+            println("SQL Exception: ${e.message}")
+        } catch (e: ClassNotFoundException) {
+            Toast.makeText(this@MainActivity, "Driver Class Not Found: ${e.message}", Toast.LENGTH_LONG).show()
+            println("Driver Class Not Found: ${e.message}")
+        } catch (e: Exception) {
+            Toast.makeText(this@MainActivity, "General Exception: ${e.cause}", Toast.LENGTH_LONG).show()
+            println("General Exception: ${e.message}")
+            e.printStackTrace()
+        }
+    }
 
 }

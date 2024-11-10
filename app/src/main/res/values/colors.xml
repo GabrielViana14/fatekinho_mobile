@@ -12,4 +12,7 @@
     <color name="light_gray">#D4D4D4</color>
     <color name="white">#F2F0EF</color>
     <color name="dark_orange">#FAAC0C</color>
+    <color name="dark_gray">#2E3338</color>
+    <color name="black_blue">#09131E</color>
+    <color name="gray2">#3A3F44</color>
 </resources>

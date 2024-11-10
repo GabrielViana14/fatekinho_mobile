@@ -1,138 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_black"
+    android:background="@drawable/radial_background"
     android:gravity="center"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:orientation="vertical"
+    android:padding="15dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="350dp"
-        android:layout_height="270dp"
-        android:layout_gravity="center"
-        android:layout_margin="16dp"
-        app:cardBackgroundColor="@android:color/transparent"
-        >
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/card_login"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
-                android:src="@drawable/heart_icon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
-                android:src="@drawable/spades_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="4dp"
-                android:src="@drawable/clubs_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="4dp"
-                android:src="@drawable/diamond_icon"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Login"
-                android:textColor="@color/red"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/login_email_text"
-                android:layout_width="250dp"
-                android:layout_height="48dp"
-                android:hint="E-mail Cadastrado *:"
-                android:textSize="14sp"
-                android:inputType="textEmailAddress"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-            <EditText
-                android:id="@+id/login_senha_text"
-                android:layout_width="250dp"
-                android:layout_height="48dp"
-                android:hint="Senha*:"
-                android:textSize="14sp"
-                android:inputType="textPassword"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login_email_text" />
-
-            <TextView
-                android:id="@+id/login_btn_esqueci_senha"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/forgot_pass"
-                android:textColor="@color/gray"
-                app:layout_constraintStart_toStartOf="@+id/login_senha_text"
-                app:layout_constraintTop_toBottomOf="@+id/login_senha_text" />
-
-            <Button
-                android:id="@+id/login_btn_entrar"
-                android:layout_width="250dp"
-                android:layout_height="35dp"
-                android:text="Entrar"
-                android:backgroundTint="@color/red"
-                app:layout_constraintBottom_toTopOf="@+id/login_btn_cadastrar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/login_btn_cadastrar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="Ainda não tem conta? Cadastre-se"
-                android:textStyle="bold"
-                android:textColor="@color/dark_orange"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/cards_background"
-        android:layout_marginTop="200dp"
-        android:layout_gravity="center"/>
+        android:src="@drawable/logo_no_text"
+        android:layout_gravity="center"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bem Vindo de volta!"
+        android:textSize="26sp"
+        android:textColor="@color/white"
+        android:layout_gravity="center"
+        android:layout_marginBottom="50dp"
+        />
+    <EditText
+        android:id="@+id/login_txt_email"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="E-mail"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/white"
+        android:background="@drawable/edit_text_login"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_marginVertical="10dp"
+        />
+    <EditText
+        android:id="@+id/login_txt_senha"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Senha"
+        android:inputType="textPassword"
+        android:textColorHint="@color/white"
+        android:background="@drawable/edit_text_login"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_marginVertical="10dp"
+        android:drawableRight="@drawable/toggle_on_maior"
+        android:drawableTint="@color/white"
+        />
+    <TextView
+        android:id="@+id/login_btn_forgot_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/forgot_pass"
+        android:textSize="20sp"
+        android:textColor="@color/dark_orange"
+        android:layout_gravity="end"
+        android:layout_marginBottom="50dp"
+        />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/login_btn_entrar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Entrar"
+        android:textSize="24sp"
+        android:textColor="@color/black"
 
+        android:background="@drawable/entrar_button"
+        android:layout_marginVertical="10dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="70dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ainda não tem conta? "
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_gravity="end"
+            />
+        <TextView
+            android:id="@+id/login_btn_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sign"
+            android:textSize="18sp"
+            android:textColor="@color/dark_orange"
+            android:layout_gravity="end"
+            />
+    </LinearLayout>
 
-
-
-</FrameLayout>
+</LinearLayout>
