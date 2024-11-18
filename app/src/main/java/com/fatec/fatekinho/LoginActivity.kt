@@ -10,64 +10,88 @@ import android.view.MotionEvent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.fatec.fatekinho.data_class.LoginRequest
+import com.fatec.fatekinho.data_class.LoginResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.sql.Connection
-import java.sql.DriverManager
-import java.sql.PreparedStatement
-import java.sql.ResultSet
-import java.sql.SQLException
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var txt_senha: EditText
+    private lateinit var txtEmail: EditText
+    private lateinit var txtSenha: EditText
+    private lateinit var btnEntrar: Button
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        txt_senha = findViewById(R.id.login_txt_senha)
+        txtEmail = findViewById(R.id.login_txt_email)
+        txtSenha = findViewById(R.id.login_txt_senha)
+        btnEntrar = findViewById(R.id.login_btn_entrar)
 
         // Função para mostrar ou ocultar senha
-        txt_senha.setOnTouchListener { v, event ->
+        txtSenha.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 val drawableRight = 2
-                if (event.rawX >= (txt_senha.right - txt_senha.compoundDrawables[drawableRight].bounds.width())) {
-                    if (txt_senha.transformationMethod == null) {
-                        txt_senha.transformationMethod = PasswordTransformationMethod.getInstance()
-                        txt_senha.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.baseline_toggle_off_48), null)
+                if (event.rawX >= (txtSenha.right - txtSenha.compoundDrawables[drawableRight].bounds.width())) {
+                    if (txtSenha.transformationMethod == null) {
+                        txtSenha.transformationMethod = PasswordTransformationMethod.getInstance()
+                        txtSenha.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.baseline_toggle_off_48), null)
                     } else {
-                        txt_senha.transformationMethod = null
-                        txt_senha.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.toggle_on_maior), null)
+                        txtSenha.transformationMethod = null
+                        txtSenha.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.toggle_on_maior), null)
                     }
                 }
             }
             false
         }
 
+        btnEntrar.setOnClickListener {
+            val email = txtEmail.text.toString()
+            val senha = txtSenha.text.toString()
+            login(email, senha)
+        }
+
 
 
     }
 
-    private fun Login(email: String, senha: String) {
-        // Verificar se os campos não estão vazios
-        if (email.isBlank() || senha.isBlank()) {
-            Toast.makeText(this, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if(email == "admin" && senha == "admin123"){
-            Toast.makeText(this@LoginActivity,"Login efeito com sucesso",Toast.LENGTH_SHORT).show()
+    private fun login(email: String, password: String) {
+        val loginRequest = LoginRequest(email, password)
+        val call = RetroFitInstance.api.login(loginRequest)
 
-            // Volta para tela iniciar com informação do usuario
-            val intent = Intent(this@LoginActivity,MainActivity::class.java)
-            intent.putExtra("login","Admin")
-            startActivity(intent)
-            //Termina a Activity atual
-            finish()
-        } else{
-            Toast.makeText(this@LoginActivity,"Senha incorreta!",Toast.LENGTH_SHORT).show()
-        }
+        call.enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    val token = loginResponse?.token
+                    saveAuthToken(token.toString())
+                    // Armazene o token, ex: em SharedPreferences
+                    // Toast.makeText(this@LoginActivity,"Token de autenticação: $token",Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this@LoginActivity,MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this@LoginActivity,"Falha no login: ${response.code()}",Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                Toast.makeText(this@LoginActivity,"Erro na chamada da API: ${t.message}",Toast.LENGTH_SHORT).show()
+            }
+        })
     }
+
+    // Salvar o token em SharedPreferences
+    fun saveAuthToken(token: String) {
+        val sharedPreferences = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("auth_token", token)
+        editor.apply()
+    }
+
 
 }

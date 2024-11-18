@@ -3,41 +3,47 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
+
     <item
         android:id="@+id/home"
         android:title="@string/menu_home"
         android:icon="@drawable/baseline_space_dashboard_24"
         />
     <item
-        android:id="@+id/players"
-        android:title="@string/menu_players"
-        android:icon="@drawable/baseline_groups_24"
+        android:id="@+id/users_menu"
+        android:title="Usuários"
+        android:icon="@drawable/baseline_account_circle_24"
         />
     <item
-        android:id="@+id/transactions"
-        android:title="@string/menu_transactions"
-        android:icon="@drawable/baseline_account_balance_wallet_24"
-        />
+        android:title="@string/menu_config">
+        <menu>
+            <item
+                android:title="Configurações da Conta"
+                android:icon="@drawable/baseline_account_circle_24"
+                />
+            <item
+                android:title="Configurações de Notificação"
+                android:icon="@drawable/baseline_notifications_24"
+                />
+            <item
+                android:title="Feedback"
+                android:icon="@drawable/baseline_feedback_24"
+                />
+        </menu>
+    </item>
     <item
-        android:id="@+id/games"
-        android:title="@string/menu_games"
-        android:icon="@drawable/baseline_casino_24"
-        />
-    <item
-        android:id="@+id/reports"
-        android:title="@string/menu_reports"
-        android:icon="@drawable/baseline_bar_chart_24"
-        />
-    <item
-        android:id="@+id/customers"
-        android:title="@string/menu_customer_service"
-        android:icon="@drawable/baseline_support_agent_24"
-        />
-    <item
-        android:id="@+id/config"
-        android:title="@string/menu_config"
-        android:icon="@drawable/baseline_settings_24"
-        />
+        android:title="Outros">
+        <menu>
+            <item
+                android:title="Sobre nós"
+                android:icon="@drawable/baseline_business_24"
+                />
+            <item
+                android:title="FAQ"
+                android:icon="@drawable/baseline_forum_24"
+                />
+        </menu>
+    </item>
     <item
         android:title="Login"
         >
@@ -46,11 +52,7 @@
                 android:id="@+id/logoff"
                 android:title="Sair"
                 android:icon="@drawable/baseline_login_24"
-                />
-            <item
-                android:id="@+id/alt_senha"
-                android:title="Alterar senha"
-                android:icon="@drawable/baseline_edit_24"
+                android:actionLayout="@layout/buttton_exit"
                 />
         </menu>
 

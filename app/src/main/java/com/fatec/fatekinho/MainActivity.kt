@@ -50,7 +50,12 @@ class MainActivity : AppCompatActivity() {
         btnCadastro = findViewById(R.id.btn_cadastrar)
         btn_login = findViewById(R.id.btn_entrar)
 
-        conectaDB()
+        val token: String? = getAuthToken()  // Obtém o token
+        if (token.isNullOrEmpty()) {  // Verifica se o token é nulo ou está vazio
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()  // Fecha a activity atual para evitar que o usuário volte para ela
+        }
 
 
         btn_login.setOnClickListener {
@@ -86,6 +91,7 @@ class MainActivity : AppCompatActivity() {
             when(it.itemId){
                 R.id.home -> replaceFragment(HomeFragment())
                 R.id.logoff -> logoff()
+                R.id.users_menu ->replaceFragment(UsersFragment())
 
 
             }
@@ -135,36 +141,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun conectaDB() {
-        val connectionUrl =
-            "jdbc:sqlserver://fatekinho-fatec.database.windows.net:1433;" +
-                    "database=fatekinho;" +
-                    "user=admin1@fatekinho-fatec;" + // Inclui o domínio para autenticação
-                    "password=Admin@2024;" +
-                    "encrypt=false;" +
-                    "trustServerCertificate=true;" +
-                    "loginTimeout=30;"
-
-        try {
-            // Carrega o driver explicitamente
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver")
-
-            println("Connecting to SQL Server ... $connectionUrl")
-            DriverManager.getConnection(connectionUrl).use { connection ->
-                println("Done.")
-                Toast.makeText(this@MainActivity, "Connected", Toast.LENGTH_LONG).show()
-            }
-        } catch (e: SQLException) {
-            Toast.makeText(this@MainActivity, "SQL Exception: ${e.message}", Toast.LENGTH_LONG).show()
-            println("SQL Exception: ${e.message}")
-        } catch (e: ClassNotFoundException) {
-            Toast.makeText(this@MainActivity, "Driver Class Not Found: ${e.message}", Toast.LENGTH_LONG).show()
-            println("Driver Class Not Found: ${e.message}")
-        } catch (e: Exception) {
-            Toast.makeText(this@MainActivity, "General Exception: ${e.cause}", Toast.LENGTH_LONG).show()
-            println("General Exception: ${e.message}")
-            e.printStackTrace()
-        }
+    // Recuperar o token de SharedPreferences
+    fun getAuthToken(): String? {
+        val sharedPreferences = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        return sharedPreferences.getString("auth_token", null)
     }
+
 
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:orientation="horizontal"
+    android:layout_marginVertical="10dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/gray_blue"
+        app:cardCornerRadius="10dp"
+
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical"
+            android:paddingHorizontal="10dp"
+            >
+            <ImageView
+                android:id="@+id/list_item_main_img"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baseline_account_circle_24"
+                app:tint="@color/dark_orange"
+                />
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
+                <TextView
+                    android:id="@+id/list_item_main_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Usuario"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="@color/dark_orange"
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/list_item_secon_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jorem ipsum dolor, consectetur."
+                    android:textSize="16sp"
+                    android:textColor="@color/gray_text"
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+            </LinearLayout>
+            <ImageButton
+                android:id="@+id/list_item_btn_editar"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/outline_edit_24"
+                />
+            <ImageButton
+                android:id="@+id/list_item_btn_apagar"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/outline_delete_24"
+                />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>
