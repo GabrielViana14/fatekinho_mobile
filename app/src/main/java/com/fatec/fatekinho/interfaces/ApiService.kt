@@ -2,6 +2,7 @@ package com.fatec.fatekinho.interfaces
 
 import com.fatec.fatekinho.data_class.LoginRequest
 import com.fatec.fatekinho.data_class.LoginResponse
+import com.fatec.fatekinho.data_class.TableUserDetails
 import com.fatec.fatekinho.models.Cliente
 import com.fatec.fatekinho.models.HistWonLose
 import com.fatec.fatekinho.models.Usuarios
@@ -24,6 +25,7 @@ interface ApiService {
     @GET("/histWonLose/all/")
     fun getAllHistWonLose(): Call<List<HistWonLose>>
 
-    @GET("/clientes/all/")
-    fun getAllClientes(): Call<List<Cliente>>
+    @GET("/table-comb/{id}")
+    fun getTableCombById(@Path("id")userId: Int): Call<List<TableUserDetails>>
+
 }
