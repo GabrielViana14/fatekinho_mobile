@@ -1,5 +1,6 @@
 package com.fatec.fatekinho
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -27,6 +28,8 @@ class UsersDetailsActivity : AppCompatActivity() {
 
         val idUsuario = intent.getIntExtra("idUsuario", -1)
         val email = intent.getStringExtra("email")
+        binding.usersDetailsId.text = idUsuario.toString()
+        binding.usersDetailsEmail.text = email
         Log.d("UsersDetailsActivity", "idUsuario: $idUsuario, email: $email")
 
 
@@ -37,6 +40,10 @@ class UsersDetailsActivity : AppCompatActivity() {
         )
 
         binding.recyclerViewUserDetails.layoutManager = LinearLayoutManager(this)
+
+        binding.usersDetailsBtnVoltar.setOnClickListener{
+            finish()
+        }
 
         arrayList = arrayListOf()
         getUserdataCombined(idUsuario)

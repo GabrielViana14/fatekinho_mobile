@@ -2,11 +2,16 @@ package com.fatec.fatekinho
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fatec.fatekinho.adapters.AdapterListUsers
@@ -47,6 +52,7 @@ class UsersFragment : Fragment() {
     }
 
     private fun getUserData() {
+        arrayList.clear()
         RetroFitInstance.api.getAllUsuarios().enqueue(object : retrofit2.Callback<List<Usuarios>>{
             override fun onResponse(
                 call: Call<List<Usuarios>>,
@@ -60,6 +66,7 @@ class UsersFragment : Fragment() {
                         recyclerView.adapter = AdapterListUsers(arrayList){ user, action ->
                             when (action){
                                 "editar" -> openEditScreen(user)
+                                "apagar" -> showPopupApagar(user)
                             } 
                         }
                         countReg.text = total_reg.toString()
@@ -71,6 +78,51 @@ class UsersFragment : Fragment() {
 
             override fun onFailure(call: Call<List<Usuarios>>, t: Throwable) {
                 t.printStackTrace()
+            }
+
+        })
+    }
+
+    private fun showPopupApagar(user: Usuarios) {
+        val popupView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_apagar,null)
+        val idUsuario = user.idUsuario
+        val popupWindow = PopupWindow(
+            popupView,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            true
+        )
+
+        val btnCancelar = popupView.findViewById<Button>(R.id.popup_btn_cancelar)
+        val btnApagar = popupView.findViewById<Button>(R.id.popup_btn_apagar)
+
+        popupWindow.animationStyle = android.R.style.Animation_Dialog
+        popupWindow.showAtLocation(requireView(), Gravity.CENTER, 0, 0)
+
+        btnCancelar.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        btnApagar.setOnClickListener {
+            apagarUsuario(idUsuario)
+            popupWindow.dismiss()
+        }
+    }
+
+    private fun apagarUsuario(idUsuario: Int) {
+        Toast.makeText(requireContext(), "Processando exclusão...", Toast.LENGTH_SHORT).show()
+        RetroFitInstance.api.deleteUsuarioById(idUsuario).enqueue(object : retrofit2.Callback<Void>{
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.code() == 204 || response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Usuário excluído com sucesso!", Toast.LENGTH_SHORT).show()
+                    getUserData()
+                } else {
+                    Toast.makeText(requireContext(), "Erro ao excluir usuário: ${response.code()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                t.printStackTrace()
+                Toast.makeText(requireContext(), "Falha na exclusão do usuário.", Toast.LENGTH_SHORT).show()
             }
 
         })

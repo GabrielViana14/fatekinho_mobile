@@ -47,26 +47,36 @@
 
                 <TextView
                     android:id="@+id/list_item_secon_txt"
-                    android:layout_width="wrap_content"
+                    android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:text="Jorem ipsum dolor, consectetur."
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textColor="@color/gray_text"
                     app:layout_constraintStart_toEndOf="@+id/imageView"
                     app:layout_constraintTop_toBottomOf="@+id/textView" />
             </LinearLayout>
-            <ImageButton
-                android:id="@+id/list_item_btn_editar"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/outline_edit_24"
-                />
-            <ImageButton
-                android:id="@+id/list_item_btn_apagar"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/outline_delete_24"
-                />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center">
+                <ImageButton
+                    android:id="@+id/list_item_btn_editar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/outline_edit_24"
+                    />
+                <ImageButton
+                    android:id="@+id/list_item_btn_apagar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/outline_delete_24"
+                    />
+            </LinearLayout>
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

@@ -20,4 +20,5 @@
     <color name="search_black">#1F1F22</color>
     <color name="light_blue">#42719C</color>
     <color name="gray_text">#858585</color>
+    <color name="gray_op50">#809C9294</color>
 </resources>
