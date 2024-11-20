@@ -6,3 +6,9 @@ data class Usuarios(
     val senha:String,
     val tipo:String
 )
+
+data class UsuarioCreate(
+    val email:String,
+    val senha:String,
+    val tipo:String
+)

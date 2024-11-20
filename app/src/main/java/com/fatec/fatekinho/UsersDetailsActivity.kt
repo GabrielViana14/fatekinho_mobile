@@ -28,8 +28,10 @@ class UsersDetailsActivity : AppCompatActivity() {
 
         val idUsuario = intent.getIntExtra("idUsuario", -1)
         val email = intent.getStringExtra("email")
+        val tipo = intent.getStringExtra("tipo")
         binding.usersDetailsId.text = idUsuario.toString()
         binding.usersDetailsEmail.text = email
+        binding.usersDetailsTipo.text = tipo
         Log.d("UsersDetailsActivity", "idUsuario: $idUsuario, email: $email")
 
 

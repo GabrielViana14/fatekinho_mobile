@@ -16,8 +16,13 @@
         android:theme="@style/Theme.Fatekinho"
         tools:targetApi="31">
         <activity
+            android:name=".UsersEditActivity"
+            android:exported="false"
+            android:label="@string/title_activity_users_edit"
+            android:theme="@style/Theme.Fatekinho" />
+        <activity
             android:name=".UsersDetailsActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".UsersActivity"
             android:exported="false" />

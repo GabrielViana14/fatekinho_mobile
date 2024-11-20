@@ -43,5 +43,8 @@ class AdapterListUsers(private val userlist: ArrayList<Usuarios>,
         holder.btnApagar.setOnClickListener {
             onButtonClick(currentItem, "apagar")
         }
+        holder.itemView.setOnClickListener{
+            onButtonClick(currentItem, "detalhes")
+        }
     }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -18,6 +19,7 @@ import com.fatec.fatekinho.adapters.AdapterListUsers
 import com.fatec.fatekinho.data_class.ListUser
 import com.fatec.fatekinho.models.Cliente
 import com.fatec.fatekinho.models.Usuarios
+import com.google.android.material.button.MaterialButton
 import retrofit2.Call
 import retrofit2.Response
 
@@ -26,8 +28,7 @@ class UsersFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var arrayList: ArrayList<Usuarios>
-    lateinit var mainTxt: Array<String>
-    lateinit var SecondaryTxt: Array<String>
+    private lateinit var btnCriar: MaterialButton
     private lateinit var countReg: TextView
 
 
@@ -38,6 +39,7 @@ class UsersFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_users,container,false)
         recyclerView = view.findViewById(R.id.recyclerView)
+        btnCriar = view.findViewById(R.id.rounded_icon_button)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
         countReg = view.findViewById(R.id.user_fragment_user_number)
@@ -45,10 +47,20 @@ class UsersFragment : Fragment() {
         arrayList = arrayListOf()
         getUserData()
 
+        btnCriar.setOnClickListener {
+            val intent = Intent(this.context, UsersEditActivity::class.java)
+            startActivity(intent)
+        }
+
 
 
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getUserData()
     }
 
     private fun getUserData() {
@@ -65,8 +77,9 @@ class UsersFragment : Fragment() {
                         arrayList.addAll(users)
                         recyclerView.adapter = AdapterListUsers(arrayList){ user, action ->
                             when (action){
-                                "editar" -> openEditScreen(user)
+                                "detalhes" -> openDetailsScreen(user)
                                 "apagar" -> showPopupApagar(user)
+                                "editar" -> openEditScreen(user)
                             } 
                         }
                         countReg.text = total_reg.toString()
@@ -128,10 +141,21 @@ class UsersFragment : Fragment() {
         })
     }
 
-    private fun openEditScreen(user: Usuarios) {
+    private fun openDetailsScreen(user: Usuarios) {
         val intent = Intent(this.context, UsersDetailsActivity::class.java)
         intent.putExtra("idUsuario", user.idUsuario)
         intent.putExtra("email", user.email)
+        intent.putExtra("tipo",user.tipo)
+        startActivity(intent)
+
+    }
+
+    private fun openEditScreen(user: Usuarios) {
+        val intent = Intent(this.context, UsersEditActivity::class.java)
+        intent.putExtra("idUsuario", user.idUsuario)
+        intent.putExtra("email", user.email)
+        intent.putExtra("tipo",user.tipo)
+        intent.putExtra("senha",user.senha)
         startActivity(intent)
 
     }
