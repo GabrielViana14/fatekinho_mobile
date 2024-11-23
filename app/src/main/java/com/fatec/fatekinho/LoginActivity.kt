@@ -74,6 +74,7 @@ class LoginActivity : AppCompatActivity() {
                     // Toast.makeText(this@LoginActivity,"Token de autenticação: $token",Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@LoginActivity,MainActivity::class.java)
                     startActivity(intent)
+                    finish()
                 } else {
                     Toast.makeText(this@LoginActivity,"Falha no login: ${response.code()}",Toast.LENGTH_SHORT).show()
                 }
