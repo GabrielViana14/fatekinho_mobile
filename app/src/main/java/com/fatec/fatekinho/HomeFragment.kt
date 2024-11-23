@@ -10,13 +10,18 @@ import android.view.ViewGroup
 import com.fatec.fatekinho.models.HistWonLose
 import com.fatec.fatekinho.models.Usuarios
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,6 +35,7 @@ import java.util.Locale
 class HomeFragment : Fragment() {
     private lateinit var barChart: BarChart
     private lateinit var barChart_hist: BarChart
+    private lateinit var pieChart: PieChart
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,10 +45,12 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         barChart = view.findViewById(R.id.barChart)
         barChart_hist = view.findViewById(R.id.barChart_histMes)
+        pieChart = view.findViewById(R.id.pieChart)
 
 
         fetchUsuarios() // Busca os usuários para processar os dados
         fetchHistWonLose()
+        fetchHistorico()
 
         return view
     }
@@ -134,6 +142,72 @@ class HomeFragment : Fragment() {
                 // Tratar falhas
             }
         })
+    }
+
+    private fun fetchHistorico(){
+        RetroFitInstance.api.getAllHistWonLose().enqueue(object : Callback<List<HistWonLose>>{
+            override fun onResponse(
+                call: Call<List<HistWonLose>>,
+                response: Response<List<HistWonLose>>
+            ) {
+                val jogos = response.body()
+                if(jogos != null){
+                    processarWinLose(jogos)
+                }
+
+
+
+
+            }
+
+            override fun onFailure(call: Call<List<HistWonLose>>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun processarWinLose(jogos: List<HistWonLose>) {
+        var totalGanho = 0f
+        var totalPerdido = 0f
+
+        jogos.forEach { jogo ->
+            if (jogo.ganhou == 1) {
+                totalGanho += jogo.valorApostado
+            } else {
+                totalPerdido += jogo.valorApostado
+            }
+        }
+
+        // Criar dados para o gráfico
+        val pieEntries = ArrayList<PieEntry>()
+        pieEntries.add(PieEntry(totalGanho, "Ganho"))
+        pieEntries.add(PieEntry(totalPerdido, "Perdido"))
+
+        // Configurar o dataset
+        val dataSet = PieDataSet(pieEntries, "")
+        dataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
+        dataSet.valueTextSize = 18f
+        dataSet.valueTextColor = Color.RED
+
+        // Criar PieData
+        val data = PieData(dataSet)
+        pieChart.data = data
+
+        // Personalizar o gráfico
+        pieChart.description.isEnabled = false
+
+        // Personalizar as Legendas
+        val legend = pieChart.legend
+        legend.isEnabled = true // Habilitar a legenda (se estiver desabilitada)
+        legend.textColor = android.graphics.Color.WHITE // Cor do texto da legenda
+        legend.textSize = 12f // Tamanho do texto da legenda
+
+        // Mudar a cor e o tamanho do texto das entradas
+        pieChart.setEntryLabelColor(android.graphics.Color.RED) // Cor do texto (exemplo: vermelho)
+        pieChart.setEntryLabelTextSize(18f) // Tamanho do texto (exemplo: 18dp)
+
+        pieChart.animateY(1400) // Animação
     }
 
 
@@ -240,6 +314,65 @@ class HomeFragment : Fragment() {
         barChart.animateY(1000)
 
     }
+
+    private fun processarPieDadosUsuarios(usuarios: List<Usuarios>) {
+        val tipoCount = mutableMapOf<String, Int>()
+
+        // Contabilizando a quantidade de usuários por tipo
+        usuarios.forEach {
+            tipoCount[it.tipo] = tipoCount.getOrDefault(it.tipo, 0) + 1
+        }
+
+        // Preparando os dados para o gráfico de pizza
+        val entries = ArrayList<PieEntry>()
+        val labels = ArrayList<String>()
+
+        // Adicionando as entradas ao gráfico de pizza
+        tipoCount.forEach { (tipo, count) ->
+            entries.add(PieEntry(count.toFloat(), tipo))  // Cada tipo de usuário se torna uma entrada no gráfico de pizza
+            labels.add(tipo)
+        }
+
+        // Criando o dataset para o gráfico de pizza
+        val dataSet = PieDataSet(entries, "Usuários por Tipo")
+        // Definindo cores alternativas para as fatias do gráfico
+        val colors = ArrayList<Int>()
+        for (i in entries.indices) {
+            if (i % 2 == 0) {
+                colors.add(Color.parseColor("#6D62F7"))  // Cor para fatias de índice par
+            } else {
+                colors.add(Color.parseColor("#3DD34C"))  // Cor para fatias de índice ímpar
+            }
+        }
+        dataSet.colors = colors
+        dataSet.valueTextColor = Color.WHITE
+        dataSet.valueTextSize = 18.0F
+
+        // Criando a PieData com o dataset
+        val pieData = PieData(dataSet)
+        pieChart.data = pieData
+
+        // Atualiza o gráfico
+        pieChart.invalidate()
+
+        // Configurações do visual do gráfico de pizza
+        configGraficoPizza(pieChart)
+    }
+
+    private fun configGraficoPizza(pieChart: PieChart) {
+        pieChart.setUsePercentValues(true)  // Exibir os valores em porcentagem
+        pieChart.description.isEnabled = false  // Desabilitar a descrição do gráfico
+        pieChart.isRotationEnabled = true  // Habilitar a rotação do gráfico
+        pieChart.setDrawEntryLabels(false)  // Desabilitar rótulos nas fatias
+        pieChart.legend.isEnabled = true  // Habilitar legenda
+
+        // Configurando o texto da legenda
+        val legend = pieChart.legend
+        legend.textSize = 14f  // Define o tamanho do texto (em dp)
+        legend.textColor = Color.WHITE  // Define a cor do texto (exemplo de cor branca)
+    }
+
+
 
     // Função para formatar a data
     private fun formatarDataParaMesAbreviado(dataCadastro: String): String {

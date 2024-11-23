@@ -2,17 +2,23 @@ package com.fatec.fatekinho
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fatec.fatekinho.adapters.AdapterListUsers
@@ -28,8 +34,13 @@ class UsersFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var arrayList: ArrayList<Usuarios>
+    private lateinit var searchView: SearchView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var adapter: AdapterListUsers
     private lateinit var btnCriar: MaterialButton
     private lateinit var countReg: TextView
+    private val handler = Handler(Looper.getMainLooper())
+    private var searchRunnable: Runnable? = null
 
 
     override fun onCreateView(
@@ -38,21 +49,58 @@ class UsersFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_users,container,false)
+        searchView = view.findViewById(R.id.searchView)
         recyclerView = view.findViewById(R.id.recyclerView)
         btnCriar = view.findViewById(R.id.rounded_icon_button)
+        progressBar = view.findViewById(R.id.progressBar)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
         countReg = view.findViewById(R.id.user_fragment_user_number)
 
         arrayList = arrayListOf()
+        adapter = AdapterListUsers(arrayList, { user, action ->
+            when (action) {
+                "detalhes" -> openDetailsScreen(user)
+                "apagar" -> showPopupApagar(user)
+                "editar" -> openEditScreen(user)
+            }
+        }) { filteredCount ->
+            countReg.text = filteredCount.toString()
+        }
+        recyclerView.adapter = adapter
         getUserData()
+
+
+        // Alterar a cor do texto no campo de pesquisa
+        val searchEditText = searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+        searchEditText.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        searchEditText.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+
+
+
 
         btnCriar.setOnClickListener {
             val intent = Intent(this.context, UsersEditActivity::class.java)
             startActivity(intent)
         }
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Filtrar quando o usuário pressiona "Enter"
+                query?.let { adapter.filter(it) }
+                return false
+            }
 
+            override fun onQueryTextChange(newText: String?): Boolean {
+                searchRunnable?.let { handler.removeCallbacks(it) }
+                searchRunnable = Runnable {
+                    adapter.filter(newText ?: "")
+                }
+                handler.postDelayed(searchRunnable!!, 500) // Delay de 500ms
+                return true
+            }
+
+        })
 
 
         return view
@@ -61,40 +109,38 @@ class UsersFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         getUserData()
+        searchView.setQuery(null, false)
+        searchView.clearFocus()
     }
 
     private fun getUserData() {
-        arrayList.clear()
-        RetroFitInstance.api.getAllUsuarios().enqueue(object : retrofit2.Callback<List<Usuarios>>{
+        progressBar.visibility = View.VISIBLE
+        RetroFitInstance.api.getAllUsuarios().enqueue(object : retrofit2.Callback<List<Usuarios>> {
             override fun onResponse(
                 call: Call<List<Usuarios>>,
                 response: Response<List<Usuarios>>
             ) {
-                if(response.isSuccessful){
+                progressBar.visibility = View.GONE
+                if (response.isSuccessful) {
                     val users = response.body()
-                    val total_reg = users?.size ?:0
-                    if(users != null){
-                        arrayList.addAll(users)
-                        recyclerView.adapter = AdapterListUsers(arrayList){ user, action ->
-                            when (action){
-                                "detalhes" -> openDetailsScreen(user)
-                                "apagar" -> showPopupApagar(user)
-                                "editar" -> openEditScreen(user)
-                            } 
-                        }
-                        countReg.text = total_reg.toString()
-
-
+                    users?.let {
+                        arrayList.clear()
+                        arrayList.addAll(it)
+                        adapter.notifyDataSetChanged()
+                        countReg.text = it.size.toString()
+                        adapter.filter("")
                     }
                 }
             }
 
             override fun onFailure(call: Call<List<Usuarios>>, t: Throwable) {
+                progressBar.visibility = View.GONE
                 t.printStackTrace()
+                Toast.makeText(requireContext(), "Falha ao carregar dados.", Toast.LENGTH_SHORT).show()
             }
-
         })
     }
+
 
     private fun showPopupApagar(user: Usuarios) {
         val popupView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_apagar,null)
@@ -127,6 +173,11 @@ class UsersFragment : Fragment() {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.code() == 204 || response.isSuccessful) {
                     Toast.makeText(requireContext(), "Usuário excluído com sucesso!", Toast.LENGTH_SHORT).show()
+                    val position = arrayList.indexOfFirst { it.idUsuario == idUsuario }
+                    if (position != -1) {
+                        arrayList.removeAt(position)
+                        adapter.notifyItemRemoved(position)
+                    }
                     getUserData()
                 } else {
                     Toast.makeText(requireContext(), "Erro ao excluir usuário: ${response.code()}", Toast.LENGTH_SHORT).show()

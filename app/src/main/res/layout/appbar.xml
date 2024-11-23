@@ -9,6 +9,7 @@
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/logo_no_text"/>
+        android:src="@drawable/baseline_menu_24"
+        app:tint="@color/white"/>
 
 </androidx.appcompat.widget.Toolbar>

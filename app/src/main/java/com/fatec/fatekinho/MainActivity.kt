@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
     private lateinit var toolbarIcon: ImageView
+    private lateinit var toolbar_txt: TextView
     private lateinit var btn_login: Button
     private lateinit var btnCadastro:Button
     private lateinit var txtUsername: TextView
@@ -44,17 +45,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         navView = findViewById(R.id.nav_view)
+        toolbar_txt = findViewById(R.id.toolbar_txt)
         drawerLayout = findViewById(R.id.drawerLayout)
         txtUsername = findViewById(R.id.txt_username)
         toolbarIcon = findViewById(R.id.toolbar_logo)
         btnCadastro = findViewById(R.id.btn_cadastrar)
         btn_login = findViewById(R.id.btn_entrar)
 
-        val token: String? = getAuthToken()  // Obtém o token
-        if (token.isNullOrEmpty()) {  // Verifica se o token é nulo ou está vazio
+        val token: String? = getAuthToken()
+        if (token.isNullOrEmpty()) {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
-            finish()  // Fecha a activity atual para evitar que o usuário volte para ela
+            finish()
+        } else {
+            btn_login.visibility = View.GONE
+            btnCadastro.visibility = View.GONE
+            txtUsername.visibility = View.GONE
         }
 
 
@@ -73,26 +79,25 @@ class MainActivity : AppCompatActivity() {
         // '?' diz que a variavel pode ser vazia
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        //Esconde texto
-        txtUsername.visibility = View.GONE
+
 
         txtLogin = intent.getStringExtra("login").toString()
 
-        if(txtLogin != "null"){
-            txtUsername.text = txtLogin
-            txtUsername.visibility = View.VISIBLE
-            btn_login.visibility = View.GONE
-            btnCadastro.visibility = View.GONE
-        }
+        Toast.makeText(this,"Nome: ${txtLogin}",Toast.LENGTH_SHORT).show()
 
         // lidar com botões dentro do nav drawer
         navView.setNavigationItemSelectedListener {
 
             when(it.itemId){
-                R.id.home -> replaceFragment(HomeFragment())
+                R.id.home -> {
+                    replaceFragment(HomeFragment())
+                    toolbar_txt.setText("Dashboards")
+                }
                 R.id.logoff -> logoff()
-                R.id.users_menu ->replaceFragment(UsersFragment())
-
+                R.id.users_menu -> {
+                    replaceFragment(UsersFragment())
+                    toolbar_txt.setText("Lista de Usuários")
+                }
 
             }
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -134,12 +139,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logoff(){
+        // Limpar o token de autenticação
+        val sharedPreferences = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.remove("auth_token")  // Remove o token
+        editor.apply()  // Aplica a mudança
+
+        // Limpar as informações na interface
         txtLogin = ""
         txtUsername.visibility = View.GONE
         btnCadastro.visibility = View.VISIBLE
         btn_login.visibility = View.VISIBLE
 
+        // Redirecionar para a tela de login
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()  // Encerra a MainActivity para que o usuário não possa voltar após o logoff
     }
+
 
     // Recuperar o token de SharedPreferences
     fun getAuthToken(): String? {
